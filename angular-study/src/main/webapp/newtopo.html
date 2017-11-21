@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>NewTopo 教程</title>
+<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="js/jtopo-0.4.8-min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
+		var textArray = str.split('\n');
+		if(textArray==undefined||textArray==null)return false;
+		var rowCnt = textArray.length;
+		var i = 0,imax  = rowCnt,maxLength = 0;maxText = textArray[0];
+		for(;i<imax;i++){
+			var nowText = textArray[i],textLength = nowText.length;
+			if(textLength >=maxLength){
+				maxLength = textLength;
+				maxText = nowText;
+			}
+		}
+		var maxWidth = this.measureText(maxText).width;
+		var lineHeight = this.measureText("元").width;
+		for(var j= 0;j<textArray.length;j++){
+			var words = textArray[j];
+			y += lineHeight;
+			this.fillText(words,x,y-(textArray.length*lineHeight));
+		}
+	};
+	
+	function addStreamNode(scene, nodeLink, item, textPosition) {
+		var node = new JTopo.CircleNode(item.name);
+		node.setSize(40,40);
+		node.fontColor = '0,0,0';
+		node.textPosition = textPosition;
+		node.mouseover(function(e){
+			this.alarm = item.title;
+		});
+		node.mouseout(function(e){
+			this.alarm = null;
+		});
+		node.click(function(e){
+			$(window.parent.document).find("#task").removeClass("click_active active");
+			$(window.parent.document).find("#meta-info-manage").addClass("click_active active");
+    		window.parent.document.getElementById("frame_content").src="/vrc/meta-info-manage?cluster_id="+item.target+"&topic_name="+item.name;
+    		window.parent.document.getElementById("frame_content").height=window.screen.availHeight-$($(".navbar",parent)[0]).height()-80;
+		});
+		node.paintAlarmText = function(a) {
+            if (null != this.alarm && "" != this.alarm) {
+            	var textArray = this.alarm.split('\n');
+            	if(textArray==undefined||textArray==null)return false;
+            	var rowCnt = textArray.length;
+            	var i = 0,imax  = rowCnt,maxLength = 0;maxText = textArray[0];
+            	for(;i<imax;i++){
+            		var nowText = textArray[i],textLength = nowText.length;
+            		if(textLength >=maxLength){
+            			maxLength = textLength;
+            			maxText = nowText;
+            		}
+            	}
+            	var maxWidth = a.measureText(maxText).width;
+            	var lineHeight = a.measureText("元").width;
+            	
+                var b = this.alarmColor || "255,0,0", c = this.alarmAlpha || .5;
+                a.beginPath(), a.font = this.alarmFont || "10px 微软雅黑";
+                var d = maxWidth + 6, e = lineHeight * textArray.length + 6, f = this.width / 2 - d / 2, g = -this.height / 2 - e - 8;
+                a.strokeStyle = "rgba(" + b + ", " + c + ")", a.fillStyle = "rgba(" + b + ", " + c + ")", a.lineCap = "round", a.lineWidth = 1, a.moveTo(f, g), a.lineTo(f + d, g), a.lineTo(f + d, g + e), a.lineTo(f + d / 2 + 6, g + e), a.lineTo(f + d / 2, g + e + 8), a.lineTo(f + d / 2 - 6, g + e), a.lineTo(f, g + e), a.lineTo(f, g), a.fill(), a.stroke(), a.closePath(), a.beginPath(), a.strokeStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")", a.fillStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")", a.wrapText(this.alarm, f + 2, g + e - 4), a.closePath()
+            }
+        }
+		scene.add(node);
+		var link = new JTopo.Link(nodeLink, node);
+		scene.add(link);
+	}
+  
+	$(document).ready(function() {
+		var canvas = document.getElementById('canvas');
+		canvas.width = 1500;
+		canvas.height = 1000;
+		var stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+		var scene = new JTopo.Scene(stage); // 创建一个场景对象 
+		
+		var data = {name:"datacleanjobdemo", target:"", title:"", type:"2", downstreams:[{name:"data_clean_source_topic", target:"kafka$$1", title:"data_clean_source_topic\newifjweiweijfie\nfewjwifjiwife\n32424", type:"1"}], upstreams:[{name:"data_clean_source_topic", target:"kafka$$1", title:"data_clean_source_topic", type:"1"},{name:"data_clean_source_topic", target:"kafka$$1", title:"data_clean_source_topic", type:"1"}]};
+		var upstreams = data.upstreams;
+		var downstreams = data.downstreams;
+
+		var nodeUP = new JTopo.Node("");
+		nodeUP.setSize(0,0);
+		nodeUP.setLocation(canvas.width/2-100,100); 
+		nodeUP.fontColor = '0,0,0';
+		nodeUP.textPosition = 'Middle_Center';
+		nodeUP.layout = {type: 'tree', direction: 'left', width: upstreams.length * 100, height: 100};
+		scene.add(nodeUP);
+		for (var i = 0; i < upstreams.length; i++) {
+			var ups = upstreams[i];
+			addStreamNode(scene, nodeUP, ups, "Middle_Left");
+		}
+		
+		var nodeDOWN = new JTopo.Node(data.name);
+		nodeDOWN.setSize(40,40);
+		nodeDOWN.setLocation(canvas.width/2,100-20); 
+		nodeDOWN.fontColor = '0,0,0';
+		nodeDOWN.textPosition = 'Middle_Left';
+		nodeDOWN.layout = {type: 'tree', direction: 'right', width: downstreams.length * 100, height: 200};
+		scene.add(nodeDOWN);
+		for (var i = 0; i < downstreams.length; i++) {
+			var downs = downstreams[i];
+			addStreamNode(scene, nodeDOWN, downs, "Middle_Right");
+		}
+		
+		JTopo.layout.layoutNode(scene, nodeUP, true);
+		JTopo.layout.layoutNode(scene, nodeDOWN, true);
+		
+		var link = new JTopo.Link(nodeUP, nodeDOWN);
+		link.arrowsRadius = 10;
+		scene.add(link);
+        
+	});
+</script>
+</head>
+<body>
+	<canvas id="canvas"></canvas>  
+</body>
+</html>

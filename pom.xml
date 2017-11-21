@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.xuyong.study</groupId>
+    <artifactId>all-study</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>angular-study</module>
+        <module>cglib-study</module>
+        <module>circular-queue-study</module>
+        <module>concurrent-study</module>
+        <module>dubbo-consumer-study</module>
+        <module>dubbo-provider-study</module>
+        <module>dubbo-service-study</module>
+        <module>guava-study</module>
+        <module>hbase-study</module>
+        <module>htmlparser-study</module>
+        <module>j2se-study</module>
+        <module>jdependency-study</module>
+        <module>jexl-study</module>
+        <module>kafka011-study</module>
+        <module>kafka-study</module>
+        <module>nimbus-client-study</module>
+        <module>opentsdb-study</module>
+        <module>redis-study</module>
+        <module>spring-boot-study</module>
+        <module>spring-cloud-study</module>
+        <module>spring-study</module>
+        <module>storm-join-study</module>
+        <module>storm-kafka-study</module>
+        <module>storm-monitor-study</module>
+        <module>zookeeper-study</module>
+    </modules>
+
+
+</project>

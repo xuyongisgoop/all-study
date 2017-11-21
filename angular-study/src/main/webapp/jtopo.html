@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>JTopo 教程</title>
+<script src="js/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="js/jtopo-0.4.8-min.js" type="text/javascript"></script>
+<script type="text/javascript">
+CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
+	var textArray = str.split('\n');
+	if(textArray==undefined||textArray==null)return false;
+	var rowCnt = textArray.length;
+	var i = 0,imax  = rowCnt,maxLength = 0;maxText = textArray[0];
+	for(;i<imax;i++){
+		var nowText = textArray[i],textLength = nowText.length;
+		if(textLength >=maxLength){
+			maxLength = textLength;
+			maxText = nowText;
+		}
+	}
+	var maxWidth = this.measureText(maxText).width;
+	var lineHeight = this.measureText("元").width;
+	x-= lineHeight*2;
+	for(var j= 0;j<textArray.length;j++){
+		var words = textArray[j];
+		this.fillText(words,-(maxWidth/2),y-textArray.length*lineHeight/2);
+		y+= lineHeight;
+	}
+  };    
+  
+	$(document).ready(function() {
+		var canvas = document.getElementById('canvas');
+		canvas.width = 1500;
+		canvas.height = 1000;
+		var stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+		var scene = new JTopo.Scene(stage); // 创建一个场景对象 
+		
+		
+		var nodeLF1 = new JTopo.CircleNode("nodeLF1");    // 创建一个节点
+		nodeLF1.setLocation(300,100);    // 设置节点坐标                    
+        scene.add(nodeLF1); // 放入到场景中
+        
+		var nodeLF2 = new JTopo.CircleNode("nodeLF2");    // 创建一个节点
+		nodeLF2.setLocation(300,200);    // 设置节点坐标                    
+        scene.add(nodeLF2); // 放入到场景中
+        
+		var nodeLF3 = new JTopo.CircleNode("nodeLF3");    // 创建一个节点
+		nodeLF3.setLocation(300,300);    // 设置节点坐标                    
+        scene.add(nodeLF3); // 放入到场景中
+        
+		var nodeLT = new JTopo.CircleNode("To");    // 创建一个节点
+		nodeLT.mouseover(function(e){
+			nodeLT.alarm = 'Warrningfefe分接接dfwdwwji';
+		});
+		nodeLT.mouseout(function(e){
+			nodeLT.alarm = null;
+		});
+		nodeLT.paintAlarmText = function(a) {
+            if (null != this.alarm && "" != this.alarm) {
+                var b = this.alarmColor || "255,0,0", c = this.alarmAlpha || .5;
+                a.beginPath(), a.font = this.alarmFont || "10px 微软雅黑";
+                var d = a.measureText(this.alarm).width + 6, e = a.measureText("��?").width + 6, f = this.width / 2 - d / 2, g = -this.height / 2 - e - 8;
+                a.strokeStyle = "rgba(" + b + ", " + c + ")", a.fillStyle = "rgba(" + b + ", " + c + ")", a.lineCap = "round", a.lineWidth = 1, a.moveTo(f, g), a.lineTo(f + d, g), a.lineTo(f + d, g + e), a.lineTo(f + d / 2 + 6, g + e), a.lineTo(f + d / 2, g + e + 8), a.lineTo(f + d / 2 - 6, g + e), a.lineTo(f, g + e), a.lineTo(f, g), a.fill(), a.stroke(), a.closePath(), a.beginPath(), a.strokeStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")", a.fillStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")", a.wrapText(this.alarm, f + 2, g + e - 4), a.closePath()
+            }
+        }
+		nodeLT.setSize(30, 26);
+		nodeLT.setLocation(400,200);    // 设置节点坐标                    
+        scene.add(nodeLT); // 放入到场景中
+        
+        var link = new JTopo.Link(nodeLF1, nodeLT); // 增加连线
+        scene.add(link);
+        
+        var link = new JTopo.Link(nodeLF2, nodeLT); // 增加连线
+        scene.add(link);
+        
+        var link = new JTopo.Link(nodeLF3, nodeLT); // 增加连线
+        scene.add(link);
+        
+        /*
+		  var cloudNode = new JTopo.Node('root');
+	         cloudNode.setSize(30, 26);
+	         cloudNode.setLocation(460, 280);            
+	         cloudNode.layout = {type: 'circle', radius: 160};
+	         
+	         scene.add(cloudNode);
+	         
+	         for(var i=0; i<3; i++){
+	             var node = new JTopo.CircleNode('host' + i);
+	             node.fillStyle = '200,255,0';
+	             node.radius = 15;
+	             node.setLocation(scene.width * Math.random(), scene.height * Math.random());
+	             if(i == 2){
+	                 node.layout = {type: 'tree', direction: 'top', width: 50, height: 90};
+	             }else if(i == 1){
+	                 node.layout = {type: 'tree', direction: 'left', width: 50, height: 90};
+	             }else{
+	                 node.layout = {type: 'circle', radius: 60};
+	             }
+	             
+	             
+	             scene.add(node);                                
+	             var link = new JTopo.Link(cloudNode, node);
+	             scene.add(link);
+	             
+	             for(var j=0; j<6; j++){
+	                 var vmNode = new JTopo.CircleNode('vm-' + i + '-' + j);
+	                 vmNode.radius = 10;
+	                 vmNode.fillStyle = '255,255,0';
+	                 vmNode.setLocation(scene.width * Math.random(), scene.height * Math.random());
+	                 scene.add(vmNode);                                
+	                 scene.add(new JTopo.Link(node, vmNode));                            
+	             }
+	         }
+	         JTopo.layout.layoutNode(scene, cloudNode, true);
+	         
+	         scene.addEventListener('mouseup', function(e){
+	             if(e.target && e.target.layout){
+	                 JTopo.layout.layoutNode(scene, e.target, true);    
+	             }                
+	         });
+	     */ 
+        
+	});
+</script>
+</head>
+<body>
+	<canvas id="canvas"></canvas>  
+</body>
+</html>
