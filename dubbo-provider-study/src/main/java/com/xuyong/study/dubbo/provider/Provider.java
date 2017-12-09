@@ -9,6 +9,6 @@ public class Provider {
 		System.out.println("ready.....");
 		context.start();
 		
-		System.in.read(); // 按任意键退出
+		System.in.read();
 	}
 }

@@ -13,9 +13,9 @@ public class Consumer {
 		context.start();
 		System.out.println("begin consumer ....");
 
-		DemoService demoService = (DemoService) context.getBean("demoService"); // 获取远程服务代理
-		String hello = demoService.sayHello("world"); // 执行远程方法
+		DemoService demoService = (DemoService) context.getBean("demoService");
+		String hello = demoService.sayHello("world");
 
-		System.out.println(hello); // 显示调用结果
+		System.out.println(hello);
 	}
 }
