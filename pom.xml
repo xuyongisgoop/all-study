@@ -34,6 +34,7 @@
         <module>storm-kafka-study</module>
         <module>storm-monitor-study</module>
         <module>zookeeper-study</module>
+        <module>rabbitmq-study</module>
     </modules>
 
 
