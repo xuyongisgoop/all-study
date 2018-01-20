@@ -3,7 +3,7 @@ package com.xuyong.study.general;
 /**
  * Created by xuyong on 2018/1/17.
  */
-public class Node<T> {
+public abstract class Node<T> {
 
     private T data;
 
@@ -11,8 +11,5 @@ public class Node<T> {
         this.data = data;
     }
 
-    public void setData(T data) {
-        this.data = data;
-    }
-
+    public abstract void setData(T data);
 }
