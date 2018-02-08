@@ -11,6 +11,7 @@ public class FutureTaskTest {
 		TestCallableTask callable = new TestCallableTask();
 		FutureTask<String> task = new FutureTask<String>(callable);
 		new Thread(task).start();
+
 		try {
 			System.out.println(task.get());
 		} catch (InterruptedException e) {
