@@ -20,6 +20,8 @@ public class MyClassLoader extends ClassLoader{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Demo demo = new Demo();
+		demo.inc();
 		return result;
     }
     	
