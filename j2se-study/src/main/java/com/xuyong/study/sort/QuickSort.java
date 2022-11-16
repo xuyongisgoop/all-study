@@ -2,6 +2,7 @@ package com.xuyong.study.sort;
 
 public class QuickSort implements SortCommon {
 	
+	@Override
 	public void sort(int[] arr) {
 		mergeSort(arr, 0, arr.length - 1);
 	}
